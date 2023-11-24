@@ -134,6 +134,64 @@ void mostrarJogo(Cobrinha *cobrinha, Comida *comida) {
     printf("\n");
 }
 
+bool verificarColisaoComida(Cobrinha *cobrinha, Comida *comida) {
+    if (cobrinha->cabeca->x == comida->x && cobrinha->cabeca->y == comida->y) {
+        pontuacao += 1;
+        return true;
+    }
+    return false;
+}
+
+bool atualizar(Cobrinha *cobrinha, Comida *comida) {
+    if (verificarColisaoComida(cobrinha, comida)) {
+        // A cobrinha comeu a comida
+        adicionarNo(cobrinha, comida->x, comida->y);
+        cobrinha->comprimento++;
+        novaComida(comida);
+    }
+
+    mover(cobrinha);
+
+    if (verificarColisao(cobrinha)) {
+        printf("\n\tGAME OVER!\n");
+        if (pontuacao > maiorPontuacao) {
+            // TODO: gravar pontuacao em um arquivo (?)
+            maiorPontuacao = pontuacao;
+            printf("\tNOVO RECORDE!\n");
+        }
+        printf("\tSua pontuacao foi: %d\n\n", pontuacao);
+        return true;
+    }
+
+    return false;
+}
+
+void comecarJogo() {
+    Cobrinha cobrinha;
+    Comida comida;
+    inicializar(&cobrinha, &comida);
+    pontuacao = 0;
+    while (1) {
+        mostrarJogo(&cobrinha, &comida);
+        capturarEntrada(&cobrinha, &comida);
+        if(atualizar(&cobrinha, &comida)) {
+            return;
+        }
+        Sleep(42); // Delay para controle de velocidade da serpente
+    }
+}
+
+void mostraInformacoes() {
+    printf("\n\nO jogo da cobrinha, ou Snake, e um classico onde os jogadores controlam uma\n"
+       "serpente que cresce ao coletar alimentos, desviando-se das bordas do campo e do\n"
+       "proprio corpo. Os controles, usando as teclas WASD, direcionam a serpente para\n"
+       "frente, esquerda, baixo ou direita. A medida que a cobra aumenta de tamanho, a\n"
+       "dificuldade aumenta, exigindo raciocinio rapido para evitar colisoes. O desafio\n"
+       "constante entre coletar alimentos e evitar obstaculos torna o Snake um jogo\n"
+       "simples e viciante.\n\n");
+}
+
+
 int main(){
 
 }
