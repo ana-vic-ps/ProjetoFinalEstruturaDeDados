@@ -6,35 +6,39 @@
 #include <windows.h>
 
 #define LARGURA 40 // Largura da área de jogo
-#define ALTURA 20 // Altura da área de jogo
+#define ALTURA 20  // Altura da área de jogo
 
 unsigned int pontuacao = 0;
 unsigned int maiorPontuacao = 0;
 // Estrutura para um "nó" da cobrinha
-struct ParteCobra {
-    int x, y; // Coordenadas
+struct ParteCobra
+{
+    int x, y;                   // Coordenadas
     struct ParteCobra *proximo; // Ponteiro para o próximo "nó"
 };
 
 typedef struct ParteCobra ParteCobra;
 
 // Estrutura para a cobrinha
-struct Cobrinha {
+struct Cobrinha
+{
     ParteCobra *cabeca; // Cabeça da cobrinha
-    int comprimento; // Comprimento da cobrinha
-    int direcao; // Direção da cobrinha (1 - cima, 2 - baixo, 3 - esquerda, 4 - direita)
+    int comprimento;    // Comprimento da cobrinha
+    int direcao;        // Direção da cobrinha (1 - cima, 2 - baixo, 3 - esquerda, 4 - direita)
 };
 
 typedef struct Cobrinha Cobrinha;
 
 // Estrutura para a comida
-struct Comida {
+struct Comida
+{
     int x, y; // Coordenadas da comida
 };
 
 typedef struct Comida Comida;
 
-ParteCobra *criarNo(int x, int y) {
+ParteCobra *criarNo(int x, int y)
+{
     ParteCobra *no = (ParteCobra *)malloc(sizeof(ParteCobra));
     no->x = x;
     no->y = y;
@@ -42,20 +46,23 @@ ParteCobra *criarNo(int x, int y) {
     return no;
 }
 // Estrutura para adicionar um "nó" na cobrinha.
-void adicionarNo(Cobrinha *cobrinha, int x, int y) {
+void adicionarNo(Cobrinha *cobrinha, int x, int y)
+{
     ParteCobra *novoNo = criarNo(x, y);
     novoNo->proximo = cobrinha->cabeca;
     cobrinha->cabeca = novoNo;
     cobrinha->comprimento++;
 }
 
-void novaComida(Comida *comida) {
+void novaComida(Comida *comida)
+{
     // Verificar se a comida gerada está na posicao da cobra ou nas bordas
     comida->x = rand() % LARGURA;
     comida->y = rand() % ALTURA;
 }
 
-void inicializar(Cobrinha *cobrinha, Comida *comida) {
+void inicializar(Cobrinha *cobrinha, Comida *comida)
+{
     cobrinha->cabeca = criarNo(LARGURA / 2, ALTURA / 2);
     cobrinha->comprimento = 1;
     cobrinha->direcao = 4; // Começa indo para a direita
@@ -65,13 +72,16 @@ void inicializar(Cobrinha *cobrinha, Comida *comida) {
     novaComida(comida);
 }
 
-void removerNosExcetoCabeca(Cobrinha *cobrinha) {
-    if (cobrinha == NULL || cobrinha->cabeca == NULL) {
+void removerNosExcetoCabeca(Cobrinha *cobrinha)
+{
+    if (cobrinha == NULL || cobrinha->cabeca == NULL)
+    {
         return; // Verificação para evitar operações inválidas em casos nulos ou listas vazias
     }
 
     ParteCobra *atual = cobrinha->cabeca->proximo;
-    while (atual != NULL) {
+    while (atual != NULL)
+    {
         ParteCobra *proximo = atual->proximo;
         free(atual);
         atual = proximo;
@@ -82,8 +92,10 @@ void removerNosExcetoCabeca(Cobrinha *cobrinha) {
     cobrinha->comprimento = 1;
 }
 
-void resetaPosicao(Cobrinha *cobrinha) {
-    if (cobrinha == NULL) {
+void resetaPosicao(Cobrinha *cobrinha)
+{
+    if (cobrinha == NULL)
+    {
         return;
     }
     cobrinha->cabeca->x = LARGURA / 2;
@@ -91,7 +103,8 @@ void resetaPosicao(Cobrinha *cobrinha) {
     cobrinha->direcao = (rand() % 4) + 1;
 }
 
-void mostrarJogo(Cobrinha *cobrinha, Comida *comida) {
+void mostrarJogo(Cobrinha *cobrinha, Comida *comida)
+{
     system("cls"); // Limpa a tela
 
     // Desenha a área de jogo
@@ -99,18 +112,25 @@ void mostrarJogo(Cobrinha *cobrinha, Comida *comida) {
         printf("-");
     printf("\n");
 
-    for (int i = 0; i < ALTURA; i++) {
-        for (int j = 0; j < LARGURA; j++) {
+    for (int i = 0; i < ALTURA; i++)
+    {
+        for (int j = 0; j < LARGURA; j++)
+        {
             if (j == 0)
                 printf("|"); // Parede esquerda
 
             bool ehParteCorpo = false;
             ParteCobra *atual = cobrinha->cabeca;
-            while (atual != NULL) {
-                if (atual->x == j && atual->y == i) {
-                    if (atual == cobrinha->cabeca) {
+            while (atual != NULL)
+            {
+                if (atual->x == j && atual->y == i)
+                {
+                    if (atual == cobrinha->cabeca)
+                    {
                         printf("@");
-                    } else {
+                    }
+                    else
+                    {
                         printf("o");
                     }
                     // Corpo da cobrinha
@@ -136,7 +156,7 @@ void mostrarJogo(Cobrinha *cobrinha, Comida *comida) {
 
 void recomecaJogoAtual(Cobrinha *cobrinha, Comida *comida)
 {
-    if (pontuacao > maiorPontuacao) 
+    if (pontuacao > maiorPontuacao)
     {
         maiorPontuacao = pontuacao;
     }
@@ -146,43 +166,43 @@ void recomecaJogoAtual(Cobrinha *cobrinha, Comida *comida)
     novaComida(comida);
 }
 
-void capturarEntrada(Cobrinha *cobrinha, Comida *comida) 
+void capturarEntrada(Cobrinha *cobrinha, Comida *comida)
 {
-    if (_kbhit()) 
+    if (_kbhit())
     {
-        switch (_getch()) 
+        switch (_getch())
         {
-            case 'w':
-                if (cobrinha->direcao != 2)
-                    cobrinha->direcao = 1;
-                break;
-            case 's':
-                if (cobrinha->direcao != 1)
-                    cobrinha->direcao = 2;
-                break;
-            case 'a':
-                if (cobrinha->direcao != 4)
-                    cobrinha->direcao = 3;
-                break;
-            case 'd':
-                if (cobrinha->direcao != 3)
-                    cobrinha->direcao = 4;
-                break;
-            case 'r':
-                recomecaJogoAtual(cobrinha, comida);
-                break;
+        case 'w':
+            if (cobrinha->direcao != 2)
+                cobrinha->direcao = 1;
+            break;
+        case 's':
+            if (cobrinha->direcao != 1)
+                cobrinha->direcao = 2;
+            break;
+        case 'a':
+            if (cobrinha->direcao != 4)
+                cobrinha->direcao = 3;
+            break;
+        case 'd':
+            if (cobrinha->direcao != 3)
+                cobrinha->direcao = 4;
+            break;
+        case 'r':
+            recomecaJogoAtual(cobrinha, comida);
+            break;
         }
     }
 }
 
-void mover(Cobrinha *cobrinha) 
+void mover(Cobrinha *cobrinha)
 {
     int prevX = cobrinha->cabeca->x;
     int prevY = cobrinha->cabeca->y;
     ParteCobra *atual = cobrinha->cabeca->proximo;
 
     int tempX, tempY;
-    while (atual != NULL) 
+    while (atual != NULL)
     {
         tempX = atual->x;
         tempY = atual->y;
@@ -193,30 +213,30 @@ void mover(Cobrinha *cobrinha)
         atual = atual->proximo;
     }
 
-    switch (cobrinha->direcao) 
+    switch (cobrinha->direcao)
     {
-        case 1:
-            cobrinha->cabeca->y--;
-            break;
-        case 2:
-            cobrinha->cabeca->y++;
-            break;
-        case 3:
-            cobrinha->cabeca->x--;
-            break;
-        case 4:
-            cobrinha->cabeca->x++;
-            break;
+    case 1:
+        cobrinha->cabeca->y--;
+        break;
+    case 2:
+        cobrinha->cabeca->y++;
+        break;
+    case 3:
+        cobrinha->cabeca->x--;
+        break;
+    case 4:
+        cobrinha->cabeca->x++;
+        break;
     }
 }
 
-bool verificarColisao(Cobrinha *cobrinha) 
+bool verificarColisao(Cobrinha *cobrinha)
 {
     if (cobrinha->cabeca->x < 0 || cobrinha->cabeca->x >= LARGURA || cobrinha->cabeca->y < 0 || cobrinha->cabeca->y >= ALTURA)
         return true;
 
     ParteCobra *atual = cobrinha->cabeca->proximo;
-    while (atual != NULL) 
+    while (atual != NULL)
     {
         if (atual->x == cobrinha->cabeca->x && atual->y == cobrinha->cabeca->y)
             return true;
@@ -226,16 +246,20 @@ bool verificarColisao(Cobrinha *cobrinha)
     return false;
 }
 
-bool verificarColisaoComida(Cobrinha *cobrinha, Comida *comida) {
-    if (cobrinha->cabeca->x == comida->x && cobrinha->cabeca->y == comida->y) {
+bool verificarColisaoComida(Cobrinha *cobrinha, Comida *comida)
+{
+    if (cobrinha->cabeca->x == comida->x && cobrinha->cabeca->y == comida->y)
+    {
         pontuacao += 1;
         return true;
     }
     return false;
 }
 
-bool atualizar(Cobrinha *cobrinha, Comida *comida) {
-    if (verificarColisaoComida(cobrinha, comida)) {
+bool atualizar(Cobrinha *cobrinha, Comida *comida)
+{
+    if (verificarColisaoComida(cobrinha, comida))
+    {
         // A cobrinha comeu a comida
         adicionarNo(cobrinha, comida->x, comida->y);
         cobrinha->comprimento++;
@@ -244,9 +268,11 @@ bool atualizar(Cobrinha *cobrinha, Comida *comida) {
 
     mover(cobrinha);
 
-    if (verificarColisao(cobrinha)) {
+    if (verificarColisao(cobrinha))
+    {
         printf("\n\tGAME OVER!\n");
-        if (pontuacao > maiorPontuacao) {
+        if (pontuacao > maiorPontuacao)
+        {
             // TODO: gravar pontuacao em um arquivo (?)
             maiorPontuacao = pontuacao;
             printf("\tNOVO RECORDE!\n");
@@ -258,33 +284,85 @@ bool atualizar(Cobrinha *cobrinha, Comida *comida) {
     return false;
 }
 
-void comecarJogo() {
+void comecarJogo()
+{
     Cobrinha cobrinha;
     Comida comida;
     inicializar(&cobrinha, &comida);
     pontuacao = 0;
-    while (1) {
+    while (1)
+    {
         mostrarJogo(&cobrinha, &comida);
         capturarEntrada(&cobrinha, &comida);
-        if(atualizar(&cobrinha, &comida)) {
+        if (atualizar(&cobrinha, &comida))
+        {
             return;
         }
         Sleep(42); // Delay para controle de velocidade da serpente
     }
 }
 
-void mostraInformacoes() {
+void mostraInformacoes()
+{
     printf("\n\nO jogo da cobrinha, ou Snake, e um classico onde os jogadores controlam uma\n"
-       "serpente que cresce ao coletar alimentos, desviando-se das bordas do campo e do\n"
-       "proprio corpo. Os controles, usando as teclas WASD, direcionam a serpente para\n"
-       "frente, esquerda, baixo ou direita. A medida que a cobra aumenta de tamanho, a\n"
-       "dificuldade aumenta, exigindo raciocinio rapido para evitar colisoes. O desafio\n"
-       "constante entre coletar alimentos e evitar obstaculos torna o Snake um jogo\n"
-       "simples e viciante.\n\n");
+           "serpente que cresce ao coletar alimentos, desviando-se das bordas do campo e do\n"
+           "proprio corpo. Os controles, usando as teclas WASD, direcionam a serpente para\n"
+           "frente, esquerda, baixo ou direita. A medida que a cobra aumenta de tamanho, a\n"
+           "dificuldade aumenta, exigindo raciocinio rapido para evitar colisoes. O desafio\n"
+           "constante entre coletar alimentos e evitar obstaculos torna o Snake um jogo\n"
+           "simples e viciante.\n\n");
 }
 
+int mostraMenu()
+{
+    system("cls");
+    char escolha;
 
-int main(){
+    do
+    {
 
+        printf("  ___              _             ___                   \n");
+        printf(" / __| _ _   __ _ | |__ ___     / __| __ _  _ __   ___ \n");
+        printf(" \\__ \\| ' \\ / _` || / // -_)   | (_ |/ _` || '  \\ / -_)\n");
+        printf(" |___/|_||_|\\__,_||_\\_\\\\___|    \\___|\\__,_||_|_|_|\\___|\n");
+        printf("                                                        \n");
+
+        printf("\nMenu:\n");
+        printf("1. Jogar\n");
+        printf("2. Sobre\n");
+        printf("3. Sair\n");
+        printf("Escolha uma opcao: ");
+
+        // Aguarda o usuário pressionar uma tecla sem bloquear o programa
+        while (!_kbhit())
+        {
+        }
+
+        // Lê a tecla pressionada
+        escolha = _getch();
+
+        switch (escolha)
+        {
+        case '1':
+            comecarJogo();
+            break;
+        case '2':
+            mostraInformacoes();
+            break;
+        case '3':
+            printf("\n\tSaindo...\n\n");
+            break;
+        default:
+            printf("\n\n\tOpcao invalida! Tente novamente.\n");
+            break;
+        }
+
+    } while (escolha != '3');
+    exit(0);
+}
+
+int main()
+{
+    mostraMenu();
     return 0;
 }
