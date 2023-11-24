@@ -7,20 +7,3 @@ Movimentação da cobrinha: (cima, baixo, esquerda, direita) usando as teclas W,
 Crescimento da cobrinha: ao comer a comida gerada aleatoriamente na tela.
 Verificação de colisão: com as paredes e com o próprio corpo da cobrinha.
 Tela de Game Over: quando ocorre uma colisão.
-
-    Y
-  .-^-.
- /     \      .- ~ ~ -.
-()     ()    /   _ _   `.                     _ _ _
- \_   _/    /  /     \   \                . ~  _ _  ~ .
-   | |     /  /       \   \             .' .~       ~-. `.
-   | |    /  /         )   )           /  /             `.`.
-   \ \_ _/  /         /   /           /  /                `'
-    \_ _ _.'         /   /           (  (
-                    /   /             \  \
-                   /   /               \  \
-                  /   /                 )  )
-                 (   (                 /  /
-                  `.  `.             .'  /
-                    `.   ~ - - - - ~   .'
-                       ~ . _ _ _ _ . ~
